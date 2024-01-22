@@ -1,28 +1,12 @@
-CC := gcc
-CROSS_COMPILE :=
-
-TARGET := writer
-
-SRCS := writer.c
-
-OBJS := $(SRCS:.c=.o)
-
-CFLAGS := -Wall -Wextra -std=c11 -g
-
-ifdef CROSS_COMPILE
-	CC := $(CROSS_COMPILE)$(CC)
-endif
+CC := $(CROSS_COMPILE)gcc
+SRC := writer.c
+TARGET = writer
+OBJS := $(SRC:.c=.o)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(TARGET) : $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
 clean:
-	rm -f $(TARGET) $(OBJS)
-
-.PHONY: all clean
-
+	-rm -f *.o $(TARGET) *.elf *.map
