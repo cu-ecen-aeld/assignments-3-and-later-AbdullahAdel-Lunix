@@ -8,7 +8,7 @@ set -u
 NUMFILES=10
 WRITESTR=AELD_IS_FUN
 WRITEDIR=/tmp/aeld-data
-CONFIGDIR=/etc/finder-app/conf
+CONFIGDIR=conf
 username=$(cat ${CONFIGDIR}/username.txt)
 
 if [ $# -lt 3 ]
@@ -52,10 +52,28 @@ fi
 
 for i in $( seq 1 $NUMFILES)
 do
-	writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
 done
 
-OUTPUTSTRING=$(finder.sh "$WRITEDIR" "$WRITESTR")
+#echo $PWD
+
+#OUTPUTSTRING=$(/home/finder.sh "$WRITEDIR" "$WRITESTR")
+
+filesdir="$WRITEDIR"
+searchstr="$WRITESTR"
+
+# Check if filesdir is a directory
+if [ ! -d "$filesdir" ]; then
+    echo "Error: '$filesdir' is not a directory."
+    exit 1
+fi
+
+# Count the number of files and matching lines
+file_count=$(find "$filesdir" -type f | wc -l)
+match_count=$(grep -r "$searchstr" "$filesdir" | wc -l)
+
+# Print the results
+OUTPUTSTRING="The number of files are $file_count and the number of matching lines are $match_count"
 
 # remove temporary directories
 rm -rf /tmp/aeld-data
